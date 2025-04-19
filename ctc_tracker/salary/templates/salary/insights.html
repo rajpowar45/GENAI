@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Salary Insights</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">CTC Tracker</a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'employee_dashboard' %}">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'employee_logout' %}">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-5">
+    <h2>Salary Insights - {{ employee.employee_name }}</h2>
+    {% for i in insights %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ i.month }}</h5>
+            <p>Total Earnings: ₹{{ i.total_earnings }}</p>
+            <p>Total Deductions: ₹{{ i.total_deductions }}</p>
+            <p>Net Salary: ₹{{ i.net_salary }}</p>
+            <p>PF as % of Basic: {{ i.pf_percent }}%</p>
+            <p>Medical as % of Earnings: {{ i.medical_percent }}%</p>
+
+            {% if i.medical_percent < 5 %}
+            <div class="alert alert-warning">🩺 Medical allowance is low. Consider increasing it for better tax benefits.</div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>
