@@ -1,0 +1,140 @@
+<!-- salary/templates/salary/employee_dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ employee.employee_name }} - CTC Breakdown</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">CTC Tracker</a>      
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'salary_tips' %}">Tips & Suggestions</a>
+                </li>      
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'ask_ai' %}">Ask a Question</a>
+                </li>                          
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'salary_insights' %}">Insights</a>
+                </li>
+                <li class="nav-item">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'finance_news' %}">News</a>
+                    </li>                        
+                    <a class="nav-link" href="{% url 'employee_logout' %}">Logout</a>
+                </li>
+            </ul>
+            
+        </div>
+    </div>
+</nav>
+
+<!-- Filter dropdown -->
+<form method="get" class="mb-4">
+    <label for="month">Select Month:</label>
+    <select name="month" class="form-control d-inline-block w-auto mx-2">
+      {% for month in available_months %}
+        <option value="{{ month }}" {% if selected_month == month %}selected{% endif %}>
+          {{ month }}
+        </option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-primary">View</button>
+  </form>
+  
+  <!-- Salary Breakdown -->
+  {% if salary %}
+  <h3>Salary for {{ salary.month }}</h3>
+  <ul class="list-group mb-4">
+    <li class="list-group-item">Basic: ₹{{ salary.basic }}</li>
+    <li class="list-group-item">HRA: ₹{{ salary.hra }}</li>
+    <li class="list-group-item">Transport: ₹{{ salary.transport }}</li>
+    <li class="list-group-item">Education: ₹{{ salary.education }}</li>
+    <li class="list-group-item">Medical: ₹{{ salary.medical }}</li>
+    <li class="list-group-item">LTA: ₹{{ salary.lta }}</li>
+    <li class="list-group-item">PF: ₹{{ salary.pf }}</li>
+    <li class="list-group-item">PT: ₹{{ salary.pt }}</li>
+    <li class="list-group-item"><strong>Net Salary:</strong> ₹{{ salary.net_salary }}</li>
+  </ul>
+{% else %}
+  <p>No salary data available.</p>
+{% endif %}
+  
+<div class="container mt-5">
+    <h2 class="mb-4">{{ employee.employee_name }} - CTC Breakdown</h2>    
+    
+    {% for salary in salary_data %}
+    <h3>{{ salary.month }}</h3>
+    <table class="table table-bordered mb-5">
+        <thead>
+            <tr>
+                <th colspan="2" class="text-center">Earnings</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">Basic</th>
+            <td>₹{{ salary.basic }}</td>
+        </tr>
+        <tr>
+            <th scope="row">HRA</th>
+            <td>₹{{ salary.hra }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Transport</th>
+            <td>₹{{ salary.transport }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Education</th>
+            <td>₹{{ salary.education }}</td>
+        </tr>
+        <tr>
+            <th scope="row">Medical</th>
+            <td>₹{{ salary.medical }}</td>
+        </tr>
+        <tr>
+            <th scope="row">LTA</th>
+            <td>₹{{ salary.lta }}</td>
+        </tr>
+        </tbody>
+        
+        <thead>
+            <tr>
+                <th colspan="2" class="text-center">Deductions</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">PF</th>
+            <td>₹{{ salary.pf }}</td>
+        </tr>
+        <tr>
+            <th scope="row">PT</th>
+            <td>₹{{ salary.pt }}</td>
+        </tr>
+        </tbody>
+        
+        <thead>
+            <tr>
+                <th colspan="2" class="text-center">Net Salary</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr class="table-success">
+            <th scope="row">Net Salary</th>
+            <td><strong>₹{{ salary.net_salary }}</strong></td>
+        </tr>
+        </tbody>
+    </table>
+    {% endfor %}
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

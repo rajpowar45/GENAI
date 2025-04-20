@@ -1,0 +1,177 @@
+{% block content %}
+<div class="container mt-5" style="max-width: 800px;">
+    <!-- Header Section with Back Button -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-center flex-grow-1">Ask an AI Assistant</h2>
+        <a href="{% url 'employee_dashboard' %}" class="btn btn-outline-primary btn-sm">Back to Dashboard</a>
+    </div>
+
+    <!-- Ask Form Section -->
+    <form method="POST" id="ask-form" class="mb-4">
+        {% csrf_token %}
+        <div class="input-group input-group-lg mb-3">
+            <input type="text" name="prompt" id="prompt" class="form-control" placeholder="Type your question..." required>
+            <button type="submit" class="btn btn-primary">Ask</button>
+        </div>
+    </form>
+
+    <!-- Spinner (while waiting for AI response) -->
+    <div id="spinner" class="text-center my-3" style="display: none;">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Thinking...</span>
+        </div>
+        <div class="mt-2">Thinking...</div>
+    </div>
+
+    <!-- AI Response Card (if any response is available) -->
+    {% if response %}
+    <div class="card shadow-lg mt-4">
+        <div class="card-header bg-success text-white">
+            <strong>AI Response</strong>
+        </div>
+        <div class="card-body">
+            <div id="ai-response" class="markdown" style="white-space: pre-line;"></div>
+        </div>
+    </div>
+
+    <script>
+        const fullText = `{{ response|escapejs }}`;
+        const target = document.getElementById("ai-response");
+        let index = 0;
+
+        function typeText() {
+            if (index < fullText.length) {
+                target.textContent += fullText.charAt(index);
+                index++;
+                setTimeout(typeText, 10);  // typing speed
+            } else {
+                target.innerHTML = marked.parse(target.textContent);
+            }
+        }
+
+        window.onload = typeText;
+    </script>
+    {% endif %}
+</div>
+
+<script>
+    // Spinner logic
+    const form = document.getElementById("ask-form");
+    const spinner = document.getElementById("spinner");
+    form.addEventListener("submit", function () {
+        spinner.style.display = "block";
+    });
+</script>
+
+<!-- Markdown rendering -->
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f4f7fc;
+        color: #333;
+        margin: 0;
+        padding: 0;
+    }
+
+    .container {
+        background: #fff;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 1s ease-in-out;
+    }
+
+    .input-group {
+        border-radius: 8px;
+    }
+
+    .input-group input {
+        border-radius: 8px 0 0 8px;
+        transition: all 0.3s ease;
+    }
+
+    .input-group input:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .input-group button {
+        border-radius: 0 8px 8px 0;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+    .input-group button:hover {
+        background-color: #0056b3;
+    }
+
+    .card-header {
+        font-size: 1.3em;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .btn-outline-primary {
+        text-decoration: none;
+        background-color: #007bff;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 1.1em;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #007bff;
+        color: #fff;
+    }
+
+    h2 {
+        font-size: 2.2em;
+        color: #333;
+        font-weight: 600;
+        text-align: center;
+        padding-bottom: 20px;
+    }
+
+    .spinner-border {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .markdown {
+        line-height: 1.6;
+        font-size: 1.1em;
+        padding: 10px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .input-group {
+        margin-bottom: 20px;
+    }
+
+    .container .btn {
+        margin-left: auto;
+        margin-right: 0;
+    }
+</style>
+{% endblock %}
